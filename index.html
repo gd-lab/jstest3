@@ -1,23 +1,233 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="utf-8">
     <title>Sample JS</title>
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <!-- Optional theme
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">-->
 
+    <style>
+        body {
+            margin: 10px
+        }
+
+        img.placeholder {
+            width: 70px;
+            height: 70px;
+            background-color: gray;
+        }
+
+        .bottom_margin {
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
 <body>
 
-    <div></div>
+    <div class="container">
 
-<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+        <div class="row">
+
+            <div class="col-sm-3">
+                <h3>Filters:</h3>
+                <form role="form" id="filters"></form>
+            </div>
+
+            <div class="col-sm-9">
+
+                <div class="row">
+                    <div class="col-xs-12">
+                        <!--<form role="form" class="form-inline">
+                            <div class="form-group">
+                                <label for="search">Поиск</label>
+                                <input type="text" class="form-control" id="search" placeholder="Введите название товара">
+                            </div>
+                            <button type="submit" class="btn btn-success">Поиск</button>
+                        </form>-->
+
+                        <div class="input-group bottom_margin">
+                            <input id="searchText" type="text" class="form-control" placeholder="Search for...">
+                            <span class="input-group-btn">
+                                <button id="searchBtn" class="btn btn-default" type="button">Search</button>
+                            </span>
+                        </div>
+
+                    </div>
+                </div>
+
+                <ul class="list-group" id="products">
+
+                </ul>
+                <div id="products1">
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <script type="text/template" id="productTemplate">
+        <li class="list-group-item">
+            <div class="row">
+                <div class="col-xs-3">
+                    <img src="" class="placeholder img-rounded" alt="Product picture">
+                </div>
+                <div class="col-xs-5">
+                    <h5><%= product.title %></h5>
+                    <p><%= product.descr %></p>
+                    <p><span class="badge" title="Filter"><%= product.tag %></span></p>
+                </div>
+                <div class="col-xs-4">
+                    <p>Стоимость: $<%= product.price %></p>
+                </div>
+            </div>
+        </li>
+    </script>
+
+
+    <script type="text/template" id="productTemplatePanel">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading"><%= product.title %></div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-xs-6">
+                                $<%= product.descr %>
+                            </div>
+                            <div class="col-xs-6">
+                                Стоимость: $<%= product.price %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </script>
+
+    <script type="text/template" id="filterTemplate">
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" value="<%= tag %>"><%= title %>
+            </label>
+        </div>
+    </script>
+
+<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.min.js"></script>
+
 
 <script>
 
-    // TODO
+    function Product(title, price, tag, descr) {
+        this.title = title;
+        this.descr = descr || "...Описание товара...";
+        this.price = price;
+        this.tag = tag;
+    }
+
+    Product.prototype.isIncludedInSearch = function(search) {
+        if (typeof search === "undefined" || search === "") return true;
+        search = search.toLowerCase();
+        return ~this.title.toLowerCase().indexOf(search)
+                || ~this.descr.toLowerCase().indexOf(search);
+    };
+
+    Product.prototype.isIncludedInFilter = function(filter) {
+        if (typeof filter === "undefined" || filter === "") return true;
+        return (this.tag === filter);
+    };
+
+
+
+    var products = [
+        new Product("NAS Western Digital", 700, "Western Digital", "Some description here"),
+        new Product("NAS QNAP", 710, "QNAP", "Another description here.."),
+        new Product("NAS Seagate", 650, "Seagate"),
+        new Product("NAS D-Link", 650, "D-Link"),
+        new Product("DAS CFI", 500, "CFI"),
+        new Product("DAS QNAP", 135, "QNAP"),
+        new Product("HDD Seagate", 300, "Seagate"),
+        new Product("HDD Samsung", 310, "Samsung"),
+        new Product("HDD Hitachi", 290, "Hitachi"),
+        new Product("HDD Western Digital", 205, "Western Digital")
+    ];
+
+    function renderProducts(search, filters) {
+        var compiledTemplate = _.template($("#productTemplate").html());
+        var resultHtml = "";
+//debugger
+        for (var i = 0, max = products.length; i < max; i++) {
+            var product = products[i];
+            if (!product.isIncludedInSearch(search)) continue;
+            if (filters && filters.length) {
+                var isIncluded = false;
+                for (var filterIndex in filters) {
+                    if (product.isIncludedInFilter(filters[filterIndex])) {
+                        isIncluded = true;
+                        break;
+                    }
+                }
+                if (!isIncluded) continue;
+            }
+
+            var data = {
+                product: product
+            };
+            resultHtml += compiledTemplate(data);
+        }
+
+        $("#products").html(resultHtml);
+    }
+
+
+    function updateProducts() {
+        var search = $("#searchText").val();
+        var filter = [];// = $("#searchText").val();
+
+        $("#filters input[type=checkbox]:checked").each(function() {
+            //debugger
+            filter.push(this.value);
+        });
+        renderProducts(search, filter);
+        return false;
+    }
+
+
+
+    function renderFilters() {
+        var compiledTemplate = _.template($("#filterTemplate").html());
+        var resultHtml = "";
+        var tags = {};
+
+        for (var i = 0, max = products.length; i < max; i++) {
+            var product = products[i];
+            tags[product.tag] = product.tag;
+        }
+
+        for (var tag in tags) {
+            var data = {
+                tag: tag,
+                title: tag
+            };
+            resultHtml += compiledTemplate(data);
+        }
+
+        $("#filters").html(resultHtml)
+            .on("change", updateProducts);
+    }
+
+
+
+    $(document).ready(function() {
+        renderProducts();
+        renderFilters();
+        $("#searchText").on("keyup", updateProducts);
+        $("#searchBtn").on("click", updateProducts);
+    });
 
 </script>
 
