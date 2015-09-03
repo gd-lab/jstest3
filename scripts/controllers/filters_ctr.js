@@ -1,4 +1,3 @@
-//define(["jquery", "lodash", "amplify"], function ($, _, amplify) {
 define(["amplify"], function (amplify) {
 
     function isContainedInFilters(product, filters /** array */) {

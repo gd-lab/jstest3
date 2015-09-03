@@ -16,12 +16,6 @@ define(["jquery", "lodash", "amplify"], function ($, _, amplify) {
             return $rootEl;
         };
 
-
-        /*var filtersRenderer = new FiltersView(products);
-        var $rootEl = filtersRenderer.getRootElement$();
-
-        filtersRenderer.render();*/
-
         function getFiltersArray() {
             var filter = [];
             $("input[type=checkbox]:checked", $rootEl).each(function() {
@@ -31,14 +25,10 @@ define(["jquery", "lodash", "amplify"], function ($, _, amplify) {
         }
 
         $rootEl.on("change", function() {
-            //filtering.updateFilters(getFiltersArray());
-            var data = getFiltersArray();
-            //Backbone.Events.trigger('filtersChanged', data);
-            amplify.publish('filtersChanged', data);
+            amplify.publish('filtersChanged', getFiltersArray());
         });
-
-
     }
+
 
     FiltersView.prototype.render = function() {
         var resultHtml = "";
