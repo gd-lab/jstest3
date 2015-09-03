@@ -1,23 +1,27 @@
 define(function (require) {
 
     function Product(title, price, tag, descr) {
-        this.title = title;
-        this.descr = descr || "...Описание товара...";
-        this.price = price;
-        this.tag = tag;
+        title = title || "";
+        descr = descr || "...Описание товара...";
+        price = price || "0";
+        tag = tag || "";
+
+        this.getTitle = function() {
+            return title;
+        };
+
+        this.getDescr = function() {
+            return descr;
+        };
+
+        this.getPrice = function() {
+            return price;
+        };
+
+        this.getTag = function() {
+            return tag;
+        };
     }
-
-    Product.prototype.isIncludedInSearch = function(search) {
-        if (typeof search === "undefined" || search === "") return true;
-        search = search.toLowerCase();
-        return ~this.title.toLowerCase().indexOf(search)
-                || ~this.descr.toLowerCase().indexOf(search);
-    };
-
-    Product.prototype.isIncludedInFilter = function(filter) {
-        if (typeof filter === "undefined" || filter === "") return true;
-        return (this.tag === filter);
-    };
 
     return Product;
 

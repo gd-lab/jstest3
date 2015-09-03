@@ -65,12 +65,12 @@
                 <img src="" class="placeholder img-rounded" alt="Product picture">
             </div>
             <div class="col-xs-5">
-                <h5><%= product.title %></h5>
-                <p><%= product.descr %></p>
-                <p><span class="badge" title="Filter"><%= product.tag %></span></p>
+                <h5><%= title %></h5>
+                <p><%= descr %></p>
+                <p><span class="badge" title="Filter"><%= tag %></span></p>
             </div>
             <div class="col-xs-4">
-                <p>Стоимость: $<%= product.price %></p>
+                <p>Стоимость: $<%= price %></p>
             </div>
         </div>
     </li>
@@ -79,7 +79,7 @@
 <script type="text/template" id="filterTemplate">
     <div class="checkbox">
         <label>
-            <input type="checkbox" value="<%= tag %>"><%= title %>
+            <input type="checkbox" value="<%= tagId %>"><%= title %>
         </label>
     </div>
 </script>
