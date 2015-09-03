@@ -3,10 +3,6 @@ define(["jquery", "lodash", "amplify", "../models/product", "./products_view", "
 
     function MainView() {
 
-        var productsView = new ProductsView();
-
-        var filtersController = new FiltersAndSearchController();
-
         var products = [
             new Product("NAS Western Digital", 700, "Western Digital", "Some description here"),
             new Product("NAS QNAP", 710, "QNAP", "Another description here.."),
@@ -20,20 +16,23 @@ define(["jquery", "lodash", "amplify", "../models/product", "./products_view", "
             new Product("HDD Western Digital", 205, "Western Digital")
         ];
 
+        var productsView = new ProductsView();
         productsView.setProducts(products);
         productsView.render();
 
         var searchView = new SearchView();
         searchView.render();
 
-        var tags = _.transform(products, function(result, product) {
-            result.push(product.getTag());
-        });
-        tags = _.unique(tags);
+        (function() {
+            var tags = _.transform(products, function(result, product) {
+                result.push(product.getTag());
+            });
+            tags = _.unique(tags);
+            var filtersView = new FiltersView(tags);
+            filtersView.render();
+        })();
 
-        var filtersView = new FiltersView(tags);
-        filtersView.render();
-
+        new FiltersAndSearchController();
     }
 
     return MainView;
