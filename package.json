@@ -1,0 +1,19 @@
+{
+  "name": "mvc-products",
+  "version": "0.1.0",
+  "devDependencies": {
+    "grunt": "~0.4.5",
+    "grunt-contrib-concat": "^0.5.1",
+    "grunt-contrib-jshint": "~0.10.0",
+    "grunt-contrib-nodeunit": "~0.4.1",
+    "grunt-contrib-uglify": "~0.5.0",
+    "browserify": "latest",
+    "grunt-browserify": "latest",
+    "grunt-contrib-watch": "latest"
+  },
+  "dependencies": {
+    "amplifier": "^1.0.0",
+    "jquery": "^1.11.3",
+    "lodash": "^3.10.1"
+  }
+}
