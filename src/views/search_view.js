@@ -12,9 +12,12 @@ function SearchView(options) {
 
     var $text = $(options.textEl);
 
+    this.getSearchText = function() {
+        return $text.val();
+    };
+
     function updateSearch() {
-        var data = $text.val();
-        amplify.publish('searchTextChanged', data);
+        amplify.publish('searchTextChanged');
         return false;
     }
 

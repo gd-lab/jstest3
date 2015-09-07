@@ -9,29 +9,22 @@ var defaultOptions = {
 
 function ProductsView(options) {
     options = _.extend({}, defaultOptions, options);
-debugger
-    this.products = [];
     this.$productsEl = $(options.productsEl);
     this.compiledTemplate = _.template($(options.productTemplateEl).html());
 
     var me = this;
-    amplify.subscribe('updateProductsView', function (filterCb) {
-        me.render(filterCb);
+    amplify.subscribe('updateProductsView', function (products) {
+        me.render(products);
     });
 }
 
-ProductsView.prototype.setProducts = function(products) {
-    this.products = products || [];
-};
-
-ProductsView.prototype.render = function(filterCb) {
+ProductsView.prototype.render = function(products) {
+    products = products || [];
     var resultHtml = "";
     var compiledTemplate = this.compiledTemplate;
 
-    for (var i = 0, j = this.products.length; i < j; i++) {
-        var product = this.products[i];
-
-        if (filterCb && !filterCb(product)) continue;
+    for (var i = 0, j = products.length; i < j; i++) {
+        var product = products[i];
 
         var data = {
             title: product.getTitle(),

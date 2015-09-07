@@ -18,16 +18,16 @@ function FiltersView(tags, options) {
         return $rootEl;
     };
 
-    function getFiltersArray() {
+    this.getFiltersArray = function() {
         var filter = [];
         $("input[type=checkbox]:checked", $rootEl).each(function() {
             filter.push(this.value);
         });
         return filter;
-    }
+    };
 
     $rootEl.on("change", function() {
-        amplify.publish('filtersChanged', getFiltersArray());
+        amplify.publish('filtersChanged');
     });
 }
 

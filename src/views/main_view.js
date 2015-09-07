@@ -1,11 +1,10 @@
 var $ = require('jquery');
 var _ = require('lodash');
-var amplify = require('amplifier');
 var ProductModel = require('../models/product');
 var ProductsView = require('./products_view');
 var FiltersView = require('./filters_view');
 var SearchView = require('./search_view');
-var FiltersAndSearchController = require('../controllers/filters_ctr');
+var MainController = require('../controllers/main_ctr');
 
 
 function MainView() {
@@ -24,22 +23,22 @@ function MainView() {
     ];
 
     var productsView = new ProductsView();
-    productsView.setProducts(products);
-    productsView.render();
+    productsView.render(products);
 
     var searchView = new SearchView();
     searchView.render();
 
-    (function() {
+    var filtersView = (function() {
         var tags = _.transform(products, function(result, product) {
             result.push(product.getTag());
         });
         tags = _.unique(tags);
         var filtersView = new FiltersView(tags);
         filtersView.render();
+        return filtersView;
     })();
 
-    new FiltersAndSearchController();
+    new MainController(products, searchView, filtersView);
 }
 
 module.exports = MainView;
